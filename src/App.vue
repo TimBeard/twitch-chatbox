@@ -1,36 +1,11 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { ChatClient, ChatMessage as CMsg } from '@twurple/chat'
-
-import authProvider from './script/AuthProvider.ts'
-import { MessageProps } from './script/MessageProps.ts'
-
 import ChatMessage from './components/ChatMessage.vue'
 
-const channel: string = window.location.hash.substring(1)
-const chat: ChatClient = new ChatClient({ authProvider, channels: [channel] })
-
-const messages = reactive<MessageProps[]>([])
+import { messages } from './script/ChatClient.ts'
 
 function onMsgLeave() {
   messages.shift()
 }
-
-chat.onMessage((channel: string, user: string, text: string, msg: CMsg) => {
-
-  const message: MessageProps = {
-    id: msg.id || '',
-    channel,
-    name: user,
-    user: msg.userInfo.displayName || '',
-    color: msg.userInfo.color || '#FFFFFF',
-    text
-  }
-
-  messages.push(message)
-})
-
-chat.connect()
 </script>
 
 <template>
@@ -43,6 +18,7 @@ chat.connect()
           :user="msg.user"
           :color="msg.color"
           :text="msg.text"
+          :badges="msg.badges"
           @leave="onMsgLeave"
       />
     </transition-group>

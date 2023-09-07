@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { HelixChatBadgeVersion } from '@twurple/api'
 
-const { id, user, color, text } = defineProps<{
+import ChatBadge from './ChatBadge.vue'
+
+const { id, user, color, text, badges } = defineProps<{
   id: string,
   user: string,
   color: string,
-  text: string
+  text: string,
+  badges: HelixChatBadgeVersion[]
 }>()
 
 const emit = defineEmits<{ leave: [id: string] }>()
@@ -15,14 +19,13 @@ onMounted(() => {
 
   if (!message.value) return
 
-  const threshold: number = message.value.offsetHeight
   const observer: IntersectionObserver = new IntersectionObserver((entries) => {
 
     entries.forEach((entry) => {
 
       const { top }: DOMRectReadOnly = entry.boundingClientRect
 
-      if (top <= threshold) {
+      if (top <= 0) {
         emit('leave', id)
       }
     })
@@ -33,8 +36,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <li class="twitch-chat-message" ref="message">
-    <h1 class="chat-message-title" :style="`--color: ${color}`">{{ user }}</h1>
+  <li class="twitch-chat-message" ref="message" :style="`--color: ${color}`">
+    <div class="chat-message-header">
+      <h1 class="chat-message-title">{{ user }}</h1>
+
+      <ul class="chat-message-badges">
+        <ChatBadge
+            v-for="badge in badges"
+            :key="`${id}-${badge.id}`"
+            :badge="badge"
+        />
+      </ul>
+    </div>
+
     <p class="chat-message-content">{{ text }}</p>
   </li>
 </template>
@@ -56,9 +70,19 @@ onMounted(() => {
 .twitch-chat-message {
   display: flex;
   flex-direction: column;
-  padding: 1em;
-  background-color: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  position: relative;
+  padding: 1em 1em 1em 1.5em;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.25) 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.5rem;
+    height: 100%;
+    background-color: var(--color);
+  }
 
   & + & {
     margin-top: 1em;
@@ -67,6 +91,12 @@ onMounted(() => {
 
 .chat-message {
 
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &-title {
     width: fit-content;
     font-size: 1em;
@@ -74,6 +104,13 @@ onMounted(() => {
     line-height: 1.25;
     margin: 0 0 0.5em;
     animation: 0.2s ease-in 1 forwards slideInRight;
+  }
+
+  &-badges {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    gap: 0.5em;
   }
 
   &-content {

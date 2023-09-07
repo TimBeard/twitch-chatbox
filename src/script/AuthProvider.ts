@@ -37,6 +37,6 @@ async function setToken(userId: any, newTokenData: any) {
 
 authProvider.onRefresh(setToken)
 
-await authProvider.addUserForToken(data as AccessToken, ['chat'])
+authProvider.addUserForToken(data as AccessToken, ['chat'])
 
 export default authProvider

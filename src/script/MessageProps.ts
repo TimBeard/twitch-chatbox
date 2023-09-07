@@ -1,3 +1,5 @@
+import { HelixChatBadgeVersion } from '@twurple/api'
+
 export interface MessageProps {
     id: string
     channel: string
@@ -5,4 +7,5 @@ export interface MessageProps {
     user: string
     color: string
     text: string
+    badges: HelixChatBadgeVersion[]
 }
