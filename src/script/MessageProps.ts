@@ -8,5 +8,5 @@ export interface MessageProps {
     color: string
     text: string
     badges: HelixChatBadgeVersion[]
-    emotes?: Map<string, string[]>
+    emotes?: Map<string, string>
 }

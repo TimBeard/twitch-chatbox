@@ -22,22 +22,19 @@ function attachEmotes(text: string, emotes?: Map<string, string[]>) {
 
   let output: string = text
 
-  emotes.forEach((offsets, emote) => {
+  let cursor = 0
+
+  emotes.forEach((emote, offset) => {
 
     const emoteTag = `<img class="chat-message-emote" src="https://static-cdn.jtvnw.net/emoticons/v2/${emote}/default/dark/1.0" alt="${emote}" />`
 
-    let offset = 0
+    const [from, to] = offset.split('-').map(parseFloat)
 
-    for (let i = 0; i < offsets.length; i += 1) {
+    const start = output.slice(0, from + cursor)
+    const end = output.slice(cursor + to + 1)
 
-      const [from, to] = offsets[i].split('-').map(parseFloat)
-
-      const start = output.slice(0, from + offset)
-      const end = output.slice(offset + to + 1)
-
-      output = start + emoteTag + end
-      offset += emoteTag.length - (to - from + 1)
-    }
+    output = start + emoteTag + end
+    cursor += emoteTag.length - (to - from + 1)
   })
 
   return output

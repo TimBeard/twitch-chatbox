@@ -10,6 +10,27 @@ const chat: ChatClient = new ChatClient({ authProvider, channels: [channel] })
 
 export const messages = reactive<MessageProps[]>([])
 
+function transformEmotesMap(emotesMap?: Map<string, string[]>): Map<string, string> {
+
+  if (!emotesMap) return new Map()
+
+  const transformedMap: Map<string, string> = new Map()
+
+  for (const [emoteId, offsets] of emotesMap.entries()) {
+
+    for (const offset of offsets) {
+
+      const [start, end] = offset.split('-').map(parseFloat)
+      transformedMap.set([start, end].join('-'), emoteId)
+    }
+  }
+
+  const sortedTransformedMap: Map<string, string> = new Map([...transformedMap.entries()]
+    .sort((a, b) => a[0].split('-').map(parseFloat)[0] - b[0].split('-').map(parseFloat)[0]));
+
+  return sortedTransformedMap
+}
+
 chat.onMessage(async (channel: string, user: string, text: string, msg: CMsg) => {
 
   const message: MessageProps = {
@@ -20,8 +41,10 @@ chat.onMessage(async (channel: string, user: string, text: string, msg: CMsg) =>
     color: msg.userInfo.color || '#FFFFFF',
     text: text.replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`),
     badges: [],
-    emotes: msg.emoteOffsets
+    emotes: transformEmotesMap(msg.emoteOffsets)
   }
+
+  console.log(msg)
 
   msg.userInfo.badges.forEach((version, setId) => {
 
