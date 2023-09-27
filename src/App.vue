@@ -19,6 +19,7 @@ function onMsgLeave() {
           :color="msg.color"
           :text="msg.text"
           :badges="msg.badges"
+          :emotes="msg.emotes"
           @leave="onMsgLeave"
       />
     </transition-group>

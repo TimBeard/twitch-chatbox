@@ -18,8 +18,9 @@ chat.onMessage(async (channel: string, user: string, text: string, msg: CMsg) =>
     name: user,
     user: msg.userInfo.displayName || '',
     color: msg.userInfo.color || '#FFFFFF',
-    text,
-    badges: []
+    text: text.replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`),
+    badges: [],
+    emotes: msg.emoteOffsets
   }
 
   msg.userInfo.badges.forEach((version, setId) => {

@@ -4,16 +4,44 @@ import { HelixChatBadgeVersion } from '@twurple/api'
 
 import ChatBadge from './ChatBadge.vue'
 
-const { id, user, color, text, badges } = defineProps<{
+const { id, user, color, text, badges, emotes } = defineProps<{
   id: string,
   user: string,
   color: string,
   text: string,
-  badges: HelixChatBadgeVersion[]
+  badges: HelixChatBadgeVersion[],
+  emotes?: Map<string, string[]>
 }>()
 
 const emit = defineEmits<{ leave: [id: string] }>()
 const message = ref<HTMLElement>()
+
+function attachEmotes(text: string, emotes?: Map<string, string[]>) {
+
+  if (!emotes) return text
+
+  let output: string = text
+
+  emotes.forEach((offsets, emote) => {
+
+    const emoteTag = `<img class="chat-message-emote" src="https://static-cdn.jtvnw.net/emoticons/v2/${emote}/default/dark/1.0" alt="${emote}" />`
+
+    let offset = 0
+
+    for (let i = 0; i < offsets.length; i += 1) {
+
+      const [from, to] = offsets[i].split('-').map(parseFloat)
+
+      const start = output.slice(0, from + offset)
+      const end = output.slice(offset + to + 1)
+
+      output = start + emoteTag + end
+      offset += emoteTag.length - (to - from + 1)
+    }
+  })
+
+  return output
+}
 
 onMounted(() => {
 
@@ -49,7 +77,10 @@ onMounted(() => {
       </ul>
     </div>
 
-    <p class="chat-message-content">{{ text }}</p>
+    <p
+        class="chat-message-content"
+        v-html="attachEmotes(text, emotes)"
+    />
   </li>
 </template>
 
@@ -72,7 +103,7 @@ onMounted(() => {
   flex-direction: column;
   position: relative;
   padding: 1em 1em 1em 1.5em;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 100%);
 
   &::before {
     content: '';
@@ -101,7 +132,7 @@ onMounted(() => {
     width: fit-content;
     font-size: 1em;
     color: var(--color);
-    line-height: 1.25;
+    line-height: 1.75;
     margin: 0 0 0.5em;
     animation: 0.2s ease-in 1 forwards slideInRight;
   }
@@ -116,9 +147,13 @@ onMounted(() => {
   &-content {
     width: fit-content;
     text-align: justify;
-    line-height: 1.25;
+    line-height: 1.75;
     margin: 0;
     animation: 0.2s ease-in 1 forwards slideInRight;
+  }
+
+  &-emote {
+    vertical-align: middle;
   }
 }
 </style>
