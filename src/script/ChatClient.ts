@@ -31,6 +31,11 @@ function transformEmotesMap(emotesMap?: Map<string, string[]>): Map<string, stri
   return sortedTransformedMap
 }
 
+function getParentMessage(parentId: string |null): string | undefined {
+  const parentMessage = messages.find(msg => msg.id === parentId)
+  return parentMessage?.text
+}
+
 chat.onMessage(async (channel: string, user: string, text: string, msg: CMsg) => {
 
   const message: MessageProps = {
@@ -40,11 +45,12 @@ chat.onMessage(async (channel: string, user: string, text: string, msg: CMsg) =>
     user: msg.userInfo.displayName || '',
     color: msg.userInfo.color || '#FFFFFF',
     text: text.replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`),
+    isHighlight: msg.isHighlight,
+    isReply: msg.isReply,
+    parentMessage: getParentMessage(msg.parentMessageId),
     badges: [],
     emotes: transformEmotesMap(msg.emoteOffsets)
   }
-
-  console.log(msg)
 
   msg.userInfo.badges.forEach((version, setId) => {
 

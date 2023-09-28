@@ -7,6 +7,9 @@ export interface MessageProps {
     user: string
     color: string
     text: string
+    isHighlight: boolean
+    isReply: boolean
+    parentMessage?: string
     badges: HelixChatBadgeVersion[]
     emotes?: Map<string, string>
 }

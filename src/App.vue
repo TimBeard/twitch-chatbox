@@ -2,10 +2,6 @@
 import ChatMessage from './components/ChatMessage.vue'
 
 import { messages } from './script/ChatClient.ts'
-
-function onMsgLeave() {
-  messages.shift()
-}
 </script>
 
 <template>
@@ -18,6 +14,9 @@ function onMsgLeave() {
           :user="msg.user"
           :color="msg.color"
           :text="msg.text"
+          :is-highlight="msg.isHighlight"
+          :is-reply="msg.isReply"
+          :parent-message="msg.parentMessage"
           :badges="msg.badges"
           :emotes="msg.emotes"
           @leave="onMsgLeave"
