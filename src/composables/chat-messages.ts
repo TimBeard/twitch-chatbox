@@ -3,6 +3,8 @@ import tmi from 'tmi.js'
 
 import type { ChatMessageData } from '../types/chat-messages'
 
+import assignColor from '../utils/assign-color'
+
 export function useChatMessages(channel: string) {
 
   const chat: Ref<ChatMessageData[]> = ref([])
@@ -17,7 +19,7 @@ export function useChatMessages(channel: string) {
       type: tags['message-type'],
       channel: channel.substring(1),
       name: tags['display-name'],
-      color: tags.color || 'currentColor',
+      color: tags.color || assignColor(tags.username),
       badges: tags.badges,
       message,
       emotes: tags.emotes,

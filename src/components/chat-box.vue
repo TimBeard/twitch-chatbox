@@ -39,7 +39,7 @@ function removeMessage(msgId?: string): void {
   flex-direction: column;
   justify-content: flex-end;
   height: 100vh;
-  padding: 16px;
+  padding: 8px;
   box-sizing: border-box;
   overflow: hidden;
 

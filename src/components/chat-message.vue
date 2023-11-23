@@ -92,7 +92,7 @@ onMounted(() => {
   }
 
   &-timestamp {
-    opacity: 0.25;
+    color: rgba(128, 128, 128, 0.87);
   }
 
   &-badges-container {

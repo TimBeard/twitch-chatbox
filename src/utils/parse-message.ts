@@ -15,6 +15,10 @@ function parseEmotes(emotes: Emotes): ParsedEmote[] {
   return output
 }
 
+function escape(msg: string): string {
+  return msg.replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`)
+}
+
 function emoteTag(name: string): string {
   const url: string = `https://static-cdn.jtvnw.net/emoticons/v2/${name}/default/dark/1.0`
   return `<img class="chat-message-emote" src="${url}" alt="${name}" />`
@@ -31,9 +35,7 @@ export default function parseMessage(message: string, emotes?: Emotes): string {
 
   for (const { name, from, to } of parsed) {
 
-    const chunk: string = message
-      .substring(cursor, from)
-      .replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`)
+    const chunk: string = escape(message.substring(cursor, from))
 
     output += chunk
     output += emoteTag(name)
@@ -41,5 +43,5 @@ export default function parseMessage(message: string, emotes?: Emotes): string {
     cursor = to + 1
   }
 
-  return output
+  return output + escape(message.substring(cursor))
 }

@@ -1,18 +1,20 @@
-# Vue 3 + TypeScript + Vite
+# Twitch Chatbox
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/42e0fbdf-f23b-45dc-a2eb-9146c2e51501/deploy-status)](https://app.netlify.com/sites/hop-twitch/deploys)
 
-## Recommended IDE Setup
+A chatbox widget to add to your Twitch overlay.
+This project was written for learning purpose and may or may not become usable eventually.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Installation
 
-## Type Support For `.vue` Imports in TS
+Install project's dependencies using the `pnpm install` command.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+You may then run the widget. For testing purpose, use the `pnpm dev` command to run it in developer mode.
+You'll get a local url in your terminal that should look like `http://localhost:5173`. Copy it.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+In OBS, add a new web browser source to your scene. Paste in the url you copied earlier and add your channel id at the end.
+In my case, the final URL would look like this `http://localhost:5173/hommeoursporc`
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Try it online
+
+Alternatively, you can use the live version of my widget at [chat.hommeoursporc.xyz](https://chat.hommeoursporc.xyz). Don't forget to add your channel name at the end of the URL.
