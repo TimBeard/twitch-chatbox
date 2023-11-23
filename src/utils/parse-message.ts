@@ -1,4 +1,4 @@
-import type { Emotes, ParsedEmote } from '../types/chat-box'
+import type { Emotes, ParsedEmote } from '../types/chat-messages'
 
 function parseEmotes(emotes: Emotes): ParsedEmote[] {
 
@@ -24,9 +24,9 @@ export default function parseMessage(message: string, emotes?: Emotes): string {
 
   if (!emotes) return message
 
-  const output: string[] = []
   const parsed: ParsedEmote[] = parseEmotes(emotes)
 
+  let output: string = ''
   let cursor: number = 0
 
   for (const { name, from, to } of parsed) {
@@ -35,11 +35,11 @@ export default function parseMessage(message: string, emotes?: Emotes): string {
       .substring(cursor, from)
       .replace(/[<>"^]/g, (e) => `&#${e.charCodeAt(0)};`)
 
-    output.push(chunk)
-    output.push(emoteTag(name))
+    output += chunk
+    output += emoteTag(name)
 
     cursor = to + 1
   }
 
-  return output.join('')
+  return output
 }

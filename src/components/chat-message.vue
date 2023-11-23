@@ -1,13 +1,10 @@
 <template>
   <article class="chat-message" ref="element">
     <Transition name="chat-message" appear>
-      <div class="chat-message-wrapper">
+      <div class="chat-message-wrapper" v-show="isVisible">
         <div class="chat-message-header">
           <h3 class="chat-message-username">{{ name }}</h3>
-
-          <div class="chat-message-badges-container">
-
-          </div>
+          <small class="chat-message-timestamp">{{ time }}</small>
         </div>
 
         <p class="chat-message-content" v-html="parsedMessage" />
@@ -19,7 +16,7 @@
 <script setup lang="ts">
 import { Ref, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-import type { ChatMessageData } from '../types/chat-box'
+import type { ChatMessageData } from '../types/chat-messages'
 
 import parseMessage from '../utils/parse-message'
 
@@ -27,6 +24,8 @@ const { id, color, message, emotes } = defineProps<ChatMessageData>()
 const emit = defineEmits<{ exitView: [id?: string] }>()
 
 const element: Ref<HTMLElement | null> = ref(null)
+const isVisible: Ref<boolean> = ref(true)
+
 const parsedMessage = parseMessage(message, emotes)
 
 onMounted(() => {
@@ -38,9 +37,10 @@ onMounted(() => {
     const observer = new IntersectionObserver((entries) => {
 
       entries.forEach(({ intersectionRatio: ratio }) => {
+        if (ratio < 1.0) isVisible.value = false
         if (ratio <= 0.0) emit('exitView', id)
       })
-    }, { rootMargin: '8px', threshold: 0.0 })
+    }, { rootMargin: '8px', threshold: 1.0 })
 
     observer.observe(element)
 
@@ -91,6 +91,10 @@ onMounted(() => {
     text-overflow: ellipsis;
   }
 
+  &-timestamp {
+    opacity: 0.25;
+  }
+
   &-badges-container {
     display: flex;
     align-items: center;
@@ -109,7 +113,8 @@ onMounted(() => {
     vertical-align: middle;
   }
 
-  &-enter-active {
+  &-enter-active,
+  &-leave-active {
     transition: 0.4s ease-out;
     transition-property: opacity, transform;
   }
@@ -117,6 +122,11 @@ onMounted(() => {
   &-enter-from {
     opacity: 0;
     transform: translateX(25%);
+  }
+
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(-25%);
   }
 }
 </style>

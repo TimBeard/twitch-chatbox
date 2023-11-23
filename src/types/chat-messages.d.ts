@@ -19,4 +19,5 @@ export type ChatMessageData = {
   badges?: Badges
   message: string
   emotes?: Emotes
+  time: string
 }
